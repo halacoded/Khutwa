@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,9 @@ import {
   Platform,
   ScrollView,
   ActivityIndicator,
-  Picker,
 } from "react-native";
+import { signin, getMe, signup } from "../../apis/user";
+import UserContext from "../../context/UserContext";
 
 const SignUpScreen = ({ navigation }) => {
   const [formData, setFormData] = useState({
@@ -26,6 +27,7 @@ const SignUpScreen = ({ navigation }) => {
     hospital: "",
   });
   const [loading, setLoading] = useState(false);
+  const { setUser } = useContext(UserContext);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
@@ -34,15 +36,19 @@ const SignUpScreen = ({ navigation }) => {
     }));
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     console.log("Sign up attempted with:", formData);
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      await signup(formData);
+      const profile = await getMe();
+      setUser(profile);
+    } catch (error) {
+      console.error("Signup failed:", error.response?.data || error.message);
+    } finally {
       setLoading(false);
-      console.log("Registration successful!");
-      navigation.replace("MainTabs");
-    }, 1500);
+    }
   };
 
   const isPatient = formData.role === "patient";

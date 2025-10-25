@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   View,
   Text,
@@ -10,21 +10,29 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { signin, getMe } from "../../apis/user";
+import UserContext from "../../context/UserContext";
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const { setUser } = useContext(UserContext);
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     console.log("Sign in attempted with:", { email, password });
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      await signin({ email, password });
+      const profile = await getMe();
+      console.log("Login successful:", profile);
+      setUser(profile);
+    } catch (error) {
+      console.error("Login failed:", error.response?.data || error.message);
+    } finally {
       setLoading(false);
-      console.log("Login successful!");
-      navigation.replace("MainTabs");
-    }, 1500);
+    }
   };
 
   return (
@@ -39,7 +47,6 @@ const SignInScreen = ({ navigation }) => {
         </View>
 
         <View style={styles.form}>
-          {/* Email Input */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Email Address</Text>
             <TextInput
@@ -55,7 +62,6 @@ const SignInScreen = ({ navigation }) => {
             />
           </View>
 
-          {/* Password Input */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Password</Text>
             <TextInput
@@ -70,7 +76,6 @@ const SignInScreen = ({ navigation }) => {
             />
           </View>
 
-          {/* Sign In Button */}
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleSignIn}
@@ -83,7 +88,6 @@ const SignInScreen = ({ navigation }) => {
             )}
           </TouchableOpacity>
 
-          {/* Sign Up Link */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
