@@ -20,11 +20,7 @@ const SignUpScreen = ({ navigation }) => {
     password: "",
     confirmPassword: "",
     phone: "",
-    role: "patient",
     dateOfBirth: "",
-    licenseNumber: "",
-    specialization: "",
-    hospital: "",
   });
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(UserContext);
@@ -50,9 +46,6 @@ const SignUpScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
-
-  const isPatient = formData.role === "patient";
-  const isDoctor = formData.role === "doctor";
 
   return (
     <KeyboardAvoidingView
@@ -107,6 +100,18 @@ const SignUpScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.inputContainer}>
+            <Text style={styles.label}>Date of Birth</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="YYYY-MM-DD"
+              placeholderTextColor="#999"
+              value={formData.dateOfBirth}
+              onChangeText={(value) => handleInputChange("dateOfBirth", value)}
+              editable={!loading}
+            />
+          </View>
+
+          <View style={styles.inputContainer}>
             <Text style={styles.label}>Password *</Text>
             <TextInput
               style={styles.input}
@@ -133,112 +138,6 @@ const SignUpScreen = ({ navigation }) => {
               editable={!loading}
             />
           </View>
-
-          {/* Role Selection */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Account Type *</Text>
-            <View style={styles.roleContainer}>
-              <TouchableOpacity
-                style={[
-                  styles.roleButton,
-                  isPatient && styles.roleButtonActive,
-                ]}
-                onPress={() => handleInputChange("role", "patient")}
-                disabled={loading}
-              >
-                <Text
-                  style={[
-                    styles.roleButtonText,
-                    isPatient && styles.roleButtonTextActive,
-                  ]}
-                >
-                  Patient
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.roleButton, isDoctor && styles.roleButtonActive]}
-                onPress={() => handleInputChange("role", "doctor")}
-                disabled={loading}
-              >
-                <Text
-                  style={[
-                    styles.roleButtonText,
-                    isDoctor && styles.roleButtonTextActive,
-                  ]}
-                >
-                  Doctor
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Patient Specific Fields */}
-          {isPatient && (
-            <View style={styles.roleSection}>
-              <Text style={styles.roleSectionTitle}>Patient Information</Text>
-
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>Date of Birth</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="YYYY-MM-DD"
-                  placeholderTextColor="#999"
-                  value={formData.dateOfBirth}
-                  onChangeText={(value) =>
-                    handleInputChange("dateOfBirth", value)
-                  }
-                  editable={!loading}
-                />
-              </View>
-            </View>
-          )}
-
-          {/* Doctor Specific Fields */}
-          {isDoctor && (
-            <View style={styles.roleSection}>
-              <Text style={styles.roleSectionTitle}>Doctor Information</Text>
-
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>License Number *</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your medical license number"
-                  placeholderTextColor="#999"
-                  value={formData.licenseNumber}
-                  onChangeText={(value) =>
-                    handleInputChange("licenseNumber", value)
-                  }
-                  editable={!loading}
-                />
-              </View>
-
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>Specialization</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="e.g., Podiatry, Endocrinology"
-                  placeholderTextColor="#999"
-                  value={formData.specialization}
-                  onChangeText={(value) =>
-                    handleInputChange("specialization", value)
-                  }
-                  editable={!loading}
-                />
-              </View>
-
-              <View style={styles.inputContainer}>
-                <Text style={styles.label}>Hospital/Clinic</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter your hospital or clinic name"
-                  placeholderTextColor="#999"
-                  value={formData.hospital}
-                  onChangeText={(value) => handleInputChange("hospital", value)}
-                  editable={!loading}
-                />
-              </View>
-            </View>
-          )}
 
           {/* Sign Up Button */}
           <TouchableOpacity
@@ -312,48 +211,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     fontSize: 16,
     color: "#2D3748",
-  },
-  roleContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 8,
-  },
-  roleButton: {
-    flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: "#F7FAFC",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
-    borderRadius: 8,
-    marginHorizontal: 4,
-    alignItems: "center",
-  },
-  roleButtonActive: {
-    backgroundColor: "#4299E1",
-    borderColor: "#4299E1",
-  },
-  roleButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#718096",
-  },
-  roleButtonTextActive: {
-    color: "#fff",
-  },
-  roleSection: {
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: "#F7FAFC",
-    borderRadius: 8,
-    borderLeftWidth: 4,
-    borderLeftColor: "#4299E1",
-  },
-  roleSectionTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#2D3748",
-    marginBottom: 12,
   },
   button: {
     backgroundColor: "#4299E1",
