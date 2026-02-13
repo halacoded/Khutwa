@@ -20,7 +20,7 @@ const HomeScreen = () => {
   // Construct the full image URL for your backend
   const getImageUrl = () => {
     if (user?.user?.ProfileImage) {
-      return `http://192.168.8.76:10000/media/${user.user.ProfileImage}`;
+      return `http://192.168.8.87:10000/media/${user.user.ProfileImage}`;
     }
     return null;
   };
