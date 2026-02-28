@@ -1,6 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Image } from "react-native";
+import { Image, View } from "react-native";
 
 // Screens
 import HomeScreen from "../../../src/screens/App/Home/HomeScreen";
@@ -11,15 +11,25 @@ import SettingsScreen from "../../../src/screens/App/Settings/SettingsScreen";
 
 // Icons
 import homeIcon from "../../../assets/Nav-icons/homeIcon.png";
-import chartIcon from "../../../assets/Nav-icons/chartIcon.png"; // Health Report
-import settingIcon from "../../../assets/Nav-icons/settingIcon.png"; // Reused for Camera + Settings
-import bookIcon from "../../../assets/Nav-icons/bookIcon.png"; // Tutorial
+import chartIcon from "../../../assets/Nav-icons/chartIcon.png";
+import settingIcon from "../../../assets/Nav-icons/settingIcon.png";
+import bookIcon from "../../../assets/Nav-icons/bookIcon.png";
+import Camera from "../../../assets/Nav-icons/Camera.png";
 
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false }}>
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+        tabBarStyle: {
+          display: route.name === "Camera" ? "none" : "flex", // Hide tab bar on Camera screen
+          height: 60,
+          paddingBottom: 5,
+        },
+      })}
+    >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
@@ -59,16 +69,30 @@ const MainTabs = () => {
         component={CameraScreen}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Image
-              source={settingIcon}
+            <View
               style={{
-                width: 24,
-                height: 24,
-                tintColor: focused ? "#007AFF" : "#8E8E93",
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                backgroundColor: "#007AFF",
+                justifyContent: "center",
+                alignItems: "center",
+                marginBottom: 10,
               }}
-              resizeMode="contain"
-            />
+            >
+              <Image
+                source={Camera}
+                style={{
+                  width: 28,
+                  height: 28,
+                  tintColor: "#FFFFFF",
+                }}
+                resizeMode="contain"
+              />
+            </View>
           ),
+          tabBarLabel: () => null,
+          headerShown: false,
         }}
       />
       <Tab.Screen

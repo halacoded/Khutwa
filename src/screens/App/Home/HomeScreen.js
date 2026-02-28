@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react"; // useState, useEffect removed
 import {
   View,
   Text,
@@ -6,18 +6,17 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  RefreshControl,
+  // RefreshControl,
 } from "react-native";
 import UserContext from "../../../context/UserContext";
-import { getLatestSensorData } from "../../../apis/sensor";
+// import { getLatestSensorData } from "../../../apis/sensor";
 
 const HomeScreen = () => {
   const { user } = useContext(UserContext);
-  const [sensorData, setSensorData] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  // const [sensorData, setSensorData] = useState(null);
+  // const [refreshing, setRefreshing] = useState(false);
+  // const [loading, setLoading] = useState(true);
 
-  // Construct the full image URL for your backend
   const getImageUrl = () => {
     if (user?.user?.ProfileImage) {
       return `http://192.168.8.87:10000/media/${user.user.ProfileImage}`;
@@ -25,54 +24,9 @@ const HomeScreen = () => {
     return null;
   };
 
-  const fetchSensorData = async () => {
-    try {
-      setLoading(true);
-      const data = await getLatestSensorData();
-
-      if (data && data.data) {
-        setSensorData(data.data);
-      } else if (data) {
-        setSensorData(data);
-      } else {
-        // Use default data if no sensor data available
-        setSensorData({
-          temperature: 24.5,
-          humidity: 45,
-          timestamp: new Date(),
-        });
-      }
-    } catch (error) {
-      console.log("Error fetching sensor data:", error.message);
-      // Use fallback data
-      setSensorData({
-        temperature: 23.8,
-        humidity: 52,
-        timestamp: new Date(),
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await fetchSensorData();
-    setRefreshing(false);
-  };
-
   const handleNotificationPress = () => {
     console.log("Notification icon pressed");
-    // Add navigation to notifications screen here
   };
-
-  useEffect(() => {
-    fetchSensorData();
-
-    // Set up interval to fetch data every 30 seconds
-    const interval = setInterval(fetchSensorData, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   // Simple circular progress component without SVG
   const CircularProgress = ({ progress, size = 80 }) => {
@@ -83,10 +37,7 @@ const HomeScreen = () => {
           { width: size, height: size },
         ]}
       >
-        {/* Background circle */}
         <View style={[styles.circleBase, styles.circleBackground]} />
-
-        {/* Progress circle - we'll use a clever trick with borders */}
         <View
           style={[
             styles.circleBase,
@@ -97,8 +48,6 @@ const HomeScreen = () => {
             },
           ]}
         />
-
-        {/* Center text */}
         <View style={styles.progressTextContainer}>
           <Text style={styles.progressText}>{progress}%</Text>
         </View>
@@ -110,12 +59,12 @@ const HomeScreen = () => {
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.scrollContent}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
+      // refreshControl={
+      //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      // }
       showsVerticalScrollIndicator={false}
     >
-      {/* Header with profile image and greeting */}
+      {/* Header */}
       <View style={styles.header}>
         <View style={styles.profileImageContainer}>
           <Image
@@ -126,9 +75,6 @@ const HomeScreen = () => {
             }
             style={styles.profileImage}
             resizeMode="cover"
-            onError={(e) =>
-              console.log("Image load error:", e.nativeEvent.error)
-            }
           />
         </View>
         <View style={styles.greetingContainer}>
@@ -144,7 +90,6 @@ const HomeScreen = () => {
             style={styles.notificationImage}
             resizeMode="contain"
           />
-          {/* Notification badge */}
           <View style={styles.notificationBadge}>
             <Text style={styles.badgeText}>3</Text>
           </View>
@@ -216,35 +161,30 @@ const HomeScreen = () => {
 
         {/* Pressure and Environment Boxes */}
         <View style={styles.dataBoxesContainer}>
-          {/* Pressure Box */}
           <View style={styles.dataBox}>
             <Text style={styles.dataBoxTitle}>Live Pressure</Text>
             <Text style={styles.dataBoxValue}>30 PSI</Text>
             <Text style={styles.dataBoxSubtitle}>Current Reading</Text>
           </View>
 
-          {/* Environment Box with Real Data */}
           <View style={styles.dataBox}>
             <Text style={styles.dataBoxTitle}>Environment</Text>
-            {loading ? (
+            {/* Sensor logic commented out */}
+            {/* {loading ? (
               <Text style={styles.dataBoxValue}>...</Text>
-            ) : (
-              <Text style={styles.dataBoxValue}>
-                {sensorData?.temperature?.toFixed(1) || "0"}°C
-              </Text>
-            )}
-            <Text style={styles.dataBoxSubtitle}>
-              Humidity: {sensorData?.humidity?.toFixed(1) || "0"}%
-            </Text>
+            ) : ( */}
+            <Text style={styles.dataBoxValue}>0°C</Text>
+            {/* )} */}
+            <Text style={styles.dataBoxSubtitle}>Humidity: 0%</Text>
           </View>
         </View>
 
         {/* Last Updated Time */}
-        {sensorData?.timestamp && (
+        {/* {sensorData?.timestamp && (
           <Text style={styles.updateTime}>
             Updated: {new Date(sensorData.timestamp).toLocaleTimeString()}
           </Text>
-        )}
+        )} */}
 
         {/* Gait Analysis Box */}
         <View style={styles.gaitAnalysisContainer}>
@@ -259,10 +199,7 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        {/* Pressure Text */}
         <Text style={styles.pressureText}>Real-time pressure: 2.4 kg/cm²</Text>
-
-        {/* Add some extra space at the bottom for better scrolling */}
         <View style={styles.bottomSpacer} />
       </View>
     </ScrollView>
